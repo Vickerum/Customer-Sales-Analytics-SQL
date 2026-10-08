@@ -4,6 +4,27 @@ Business questions: monthly growth and growth drivers.
 Practice: CTEs, LAG, window functions, percentage change.
 */
 
+-- MoM : first explore previous month details
+select
+format(order_date, 'MMM/yyyy') as 'Month-year',
+sum(total_amount),
+LAG(SUM(total_amount)) OVER (
+    ORDER BY YEAR(order_date), MONTH(order_date)
+) AS previous_month_revenue
+from orders
+where status = 'Completed'
+group by
+year(order_date), month(order_date),
+format(order_date, 'MMM/yyyy');
+
+
+/* Learning about LAG:
+LAG = Previous | OVER = Where | ORDER BY = Which order !!!!!
+
+syntax: LAG(value) OVER ( ORDER BY something )
+*/
+
+
 -- MoM % Growth:
 with previous_month_details as(
 
